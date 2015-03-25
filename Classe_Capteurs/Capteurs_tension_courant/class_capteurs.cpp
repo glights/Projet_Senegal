@@ -41,13 +41,13 @@ float getTempAmbi(void)
 // fonction pour prendre la valeurs de temperature du moteur1
 float getTempMoteur1(void)
 {
-    return sensors.getTempC(TEMPMOT1);
+    return sensors.getTempCByIndex(TEMPMOT1);
 }
 
 // fonction pour prendre la valeurs de temperature du moteur2
 float getTempMoteur2(void)
 {
-    return sensors.getTempC(TEMPMOT2);
+    return sensors.getTempCByIndex(TEMPMOT2);
 }
 
 //fonction pour prendre la date
