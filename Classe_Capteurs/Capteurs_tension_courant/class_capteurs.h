@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <stdint.h>
-#include <DallasTemperature.h>
+#include "DallasTemperature.h"
 #ifndef CLASS_CAPTEURS_H
 #define CLASS_CAPTEURS_H
 
@@ -10,19 +10,14 @@
 #define TEMPMOT1 1
 #define TEMPMOT2 2
 
-OneWire oneWire(10);
-
-DallasTemperature sensors(&oneWire);
-
-int numberOfDevices = 0;
-
+#define PRECISION 10
 
 class class_capteurs
 {
 public:
 
     // initialisation des capteurs
-    void begin(void);
+    bool begin(void);
 
     // fonction pour prendre le courant à la batterie
     float getCurrent(void);
@@ -46,7 +41,7 @@ private:
     // fonction pour lire l'ADC
      uint16_t readADC(uint8_t ADCchannel);
 
-     float getTemp(DeviceAddress adresse, int i);
+     void incremanteDate(void);
 };
 
 #endif // CLASS_CAPTEURS_H

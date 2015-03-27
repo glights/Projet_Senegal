@@ -9,18 +9,28 @@
 
 #include "class_capteurs.h"
 
+OneWire oneWire(10);
 
+DallasTemperature tempSensors(&oneWire);
 
-void class_capteurs::begin(void)
+DeviceAddress tempDeviceAddress;
+
+int numberOfDevices = 0;
+
+bool class_capteurs::begin(void)
 {
     // Select Vref=AVcc
     ADMUX |= (1<<REFS0);
     //set prescaller to 128 and enable ADC
     ADCSRA |= (1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0)|(1<<ADEN);
 
-    sensors.begin();
-    numberOfDevices = sensors.getDeviceCount();
-
+    tempSensors.begin();
+    numberOfDevices = tempSensors.getDeviceCount();
+    tempSensors.setResolution(PRECISION);
+    if(tempSensors.getResolution() != PRECISION)
+        return 1;
+    else
+        return 0;
 }
 //fonction pour prendre une mesure de courant a la batterie
 float class_capteurs::getCurrent(void)
@@ -33,28 +43,39 @@ float class_capteurs::getVoltage(void)
 {
     return readADC(5);
 }
-float getTempAmbi(void)
+float class_capteurs::getTempAmbi(void)
 {
-    return sensors.getTempCByIndex(TEMPAMBI);
+    tempSensors.requestTemperatures();
+    if(tempSensors.getAddress(tempDeviceAddress,TEMPAMBI))
+    {
+        return tempSensors.getTempC(tempDeviceAddress);
+    }
+    else return 0.5;
+    //return tempSensors.getTempCByIndex(TEMPAMBI);
 }
 
 // fonction pour prendre la valeurs de temperature du moteur1
-float getTempMoteur1(void)
+float class_capteurs::getTempMoteur1(void)
 {
-    return sensors.getTempCByIndex(TEMPMOT1);
+    tempSensors.requestTemperatures();
+    if(tempSensors.getAddress(tempDeviceAddress,TEMPMOT1))
+    {
+        return tempSensors.getTempC(tempDeviceAddress);
+    }
+    //return tempSensors.getTempCByIndex(TEMPMOT1);
 }
 
 // fonction pour prendre la valeurs de temperature du moteur2
-float getTempMoteur2(void)
+float class_capteurs::getTempMoteur2(void)
 {
-    return sensors.getTempCByIndex(TEMPMOT2);
+    tempSensors.requestTemperatures();
+    if(tempSensors.getAddress(tempDeviceAddress,TEMPMOT2))
+    {
+        return tempSensors.getTempC(tempDeviceAddress);
+    }
+    //return tempSensors.getTempCByIndex(TEMPMOT2);
 }
 
-//fonction pour prendre la date
-String getDate(void)
-{
-
-}
 
 uint16_t class_capteurs::readADC(uint8_t ADCchannel)
 {
