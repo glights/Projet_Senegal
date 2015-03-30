@@ -11,7 +11,7 @@ long Classe_date::gday(void)
 
 void Classe_date::incremanteDate (void)
 {
-    long y, ddd, mm, dd, mi;
+    long y, ddd, mi;
 
     j++;
     y = (10000*j + 14780)/3652425;
