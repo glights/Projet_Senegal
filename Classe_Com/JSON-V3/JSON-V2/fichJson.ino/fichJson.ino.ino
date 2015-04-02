@@ -3,7 +3,7 @@
 //
 // Arduino JSON library
 // https://github.com/bblanchon/ArduinoJson
-
+#iclude <avr>
 #include <ArduinoJson.h>
 #include <stdio.h>
 #include<string.h>
@@ -36,7 +36,8 @@ void setup() {
     char *vDateTime = "12:30:26:20:03:2015";
     char *modeLecture = "regularreading";
     char *sensorUnIdCapteur = "su0001";  // sensorUnitId catpteur tempMoteur     
-      
+    
+    char *test = "test.jso";
    //while(1)
    //{
       tempAmbi = random(40);
@@ -94,11 +95,12 @@ void setup() {
       }
       Serial.println("initialization done.");
     
-       myFile = SD.open("Test.Json", FILE_WRITE);
+      myFile = SD.open(test, FILE_WRITE);
       if(myFile)
       {
         Serial.println("done1");
-        myFile.println("allo");
+        myFile.println("\n\r\n\r");
+        root.prettyPrintTo(myFile);
         Serial.println("done2");
         myFile.close();
         Serial.println("done3");
