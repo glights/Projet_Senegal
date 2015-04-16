@@ -42,7 +42,7 @@ public:
 
     char *getDate(void);
 
-    char *getDateSimple(void);
+    char *getDateFichier(void);
 
     char *getHeure(void);
 

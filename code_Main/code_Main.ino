@@ -1,4 +1,4 @@
- #include<stdlib.h>
+#include<stdlib.h>
 #include <SD.h> 
 #include <SPI.h>
 #include <TimerOne.h>
@@ -22,7 +22,7 @@ const char charAcc2[] = "},{\"id\":\"002\",\"valuetype\":\"max\",\"value\":";
 const char avFin[] = "}]}";
 const char fin[] = "]}}";
 
-char *test = "20150410.txt";
+char *txt = ".txt";
 String sDate = "19:10:25:15:04:2015";
 float tensionBatterie = 55.45;
 float ampBatterie = 60.3;
@@ -58,8 +58,8 @@ void loop(void)
   if(count >= 5)
   {
     count = 0;
-    if(isMotorOn)
-    {
+    //if(isMotorOn)
+    //{
         sDate = date.getDateComplete();
         Serial.print("date: ");
         Serial.println(sDate);
@@ -90,7 +90,7 @@ void loop(void)
           Serial.println("false");
           
         ecritureSD();
-    }
+    //}
   }
 }
 
@@ -103,7 +103,7 @@ void ecritureSD(void)
   }
   Serial.println("initialization done.");
   
-  myfile = SD.open(test, FILE_WRITE);
+  myfile = SD.open(date.getDateFichier(), FILE_WRITE);
 
   // ouvre le fichier Json
   if(nouveauFichier)

@@ -71,11 +71,11 @@ char *Classe_date::getDate(void)
     return strDate;
 }
 
-char *Classe_date::getDateSimple(void)
+char *Classe_date::getDateFichier(void)
 {
     char strDate[] = "20150326";
 
-    sprintf(strDate,"%04d%02d%02d",
+    sprintf(strDate,"%04d%02d%02d.txt",
             (int)date.y+(int)dOffset, (int)date.m, (int)date.d);
     return strDate;
 }
