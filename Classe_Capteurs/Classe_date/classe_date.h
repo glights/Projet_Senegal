@@ -38,7 +38,13 @@ public:
     void incremanteTemp(void);
 
     //fonction pour prendre la date
-    String getDate(void);
+    char *getDateComplete(void);
+
+    char *getDate(void);
+
+    char *getDateSimple(void);
+
+    char *getHeure(void);
 
     void setDate(long y, long m, long d);
 

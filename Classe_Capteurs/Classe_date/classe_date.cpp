@@ -49,12 +49,42 @@ void Classe_date::incremanteTemp(void)
 }
 
 //fonction pour prendre la date
-String Classe_date::getDate(void)
+
+
+
+char *Classe_date::getDateComplete(void)
 {
-    char strDate[] = "2015/03/26 15:05:25";
+    char strDate[] = "2015/03/26 01:16:27";
 
     sprintf(strDate,"%04d/%02d/%02d %02d:%02d:%02d",
-            (int)date.y+(int)dOffset, (int)date.m, (int)date.d,(int)temp.heure,
+            (int)date.y+(int)dOffset, (int)date.m, (int)date.d),
+            (int)temp.heure, (int)temp.minute, (int)temp.seconde;
+    return strDate;
+}
+
+char *Classe_date::getDate(void)
+{
+    char strDate[] = "2015/03/26";
+
+    sprintf(strDate,"%04d/%02d/%02d",
+            (int)date.y+(int)dOffset, (int)date.m, (int)date.d);
+    return strDate;
+}
+
+char *Classe_date::getDateSimple(void)
+{
+    char strDate[] = "20150326";
+
+    sprintf(strDate,"%04d%02d%02d",
+            (int)date.y+(int)dOffset, (int)date.m, (int)date.d);
+    return strDate;
+}
+
+char *Classe_date::getHeure(void)
+{
+    char strDate[] = "01:11:26";
+
+    sprintf(strDate,"%02d:%02d:%02d",(int)temp.heure,
             (int)temp.minute, (int)temp.seconde);
     return strDate;
 }

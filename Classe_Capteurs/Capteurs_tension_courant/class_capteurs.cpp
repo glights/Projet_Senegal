@@ -35,13 +35,13 @@ bool class_capteurs::begin(void)
 //fonction pour prendre une mesure de courant a la batterie
 float class_capteurs::getCurrent(void)
 {
-    return readADC(4);
+    return readADC(4)/10.24;
 }
 
 //fonction pour prendre une mesure de tension a la batterie
 float class_capteurs::getVoltage(void)
 {
-    return readADC(5);
+    return readADC(5)/32.3333;
 }
 float class_capteurs::getTempAmbi(void)
 {
@@ -50,7 +50,11 @@ float class_capteurs::getTempAmbi(void)
     {
         return tempSensors.getTempC(tempDeviceAddress);
     }
-    else return 0.5;
+    /*else if(!tempSensors.isConnected(tempDeviceAddress))
+    {
+        tempSensors.begin();
+    }
+    else return -1;*/
     //return tempSensors.getTempCByIndex(TEMPAMBI);
 }
 

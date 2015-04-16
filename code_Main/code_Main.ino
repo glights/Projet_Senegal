@@ -1,183 +1,247 @@
-
-#define PERIODE_TIMER1 1000000 // en micro secondes
-
-#include <SD.h>
-
+ #include<stdlib.h>
+#include <SD.h> 
+#include <SPI.h>
 #include <TimerOne.h>
-
 #include <classe_date.h>
-
 #include <class_capteurs.h>
-/*
-*  Auteur : Guillaume Baril  & ilalio
-* 
-*
-**/
 
+File myfile;
 class_capteurs capteurs;
-Classe_date temp;
-String sDate;
-float temperatureMoteur1 = 0.0;
-float temperatureMoteur2 = 0.0;
-float temperatureAmbiante = 0.0;
-float mesureCourant = 0.0;
-float mesureTension = 0.0;
-boolean alarmeVibration = false;
-long vitesseRPM = 0;
-int vitesse = 0;
+Classe_date date;
+
+const char debut[] = "{\"stationmessage\":{\"datetime\":\"";
+const char apDebut[] = "{\",\"stationid\":\"sen002\",\"\":\"regularreading\",\"event\":[";
+const char dateLive[] = "{\"sensorunitid\":\"su0001\",\"data\":[{\"datetime\":\"";
+const char charBattery1[] = "\",\"id\":\"001\",\"valuetype\":\"max\",\"value\":";
+const char charBattery2[] = "},{\"id\":\"002\",\"valuetype\":\"max\",\"value\":";
+const char charTemp1[] = "}]},{\"sensorunitid\":\"su0002\",\"data\":[{\"id\":\"001\",\"valuetype\":\"max\",\"value\":";
+const char charTemp2[] = "},{\"id\":\"002\",\"valuetype\":\"max\",\"value\":";
+const char charTemp3[] = "},{\"id\":\"003\",\"valuetype\":\"max\",\"value\":";
+const char charAcc1[] = "}]},{\"sensorunitid\":\"su0003\",\"data\":[{\"id\":\"001\",\"valuetype\":\"max\",\"value\":";
+const char charAcc2[] = "},{\"id\":\"002\",\"valuetype\":\"max\",\"value\":";
+const char avFin[] = "}]}";
+const char fin[] = "]}}";
+
+char *test = "20150410.txt";
+String sDate = "19:10:25:15:04:2015";
+float tensionBatterie = 55.45;
+float ampBatterie = 60.3;
+float tempAmbiante = 36.65;
+float tempMoteur1 = 100.35;
+float tempMoteur2 = 100.98;
+double vitesseMoteur = 6000;
+boolean alarmeVib = false;
+
 int vitesseHz = 0;
+
 int count = 0;
-int anVib = 0;
-int vib = 0;
 
-char *IdCapteurMot1 = "001";
-char *IdCapteurMot2 = "002";
-char *IdFrequence = "003";
-char *IdMesureU_24v = "004";
-char *IdMesureI_amp = "005";
-char *IdTempAmbi = "006";
-char *IdVitesseRPM = "007";
+boolean nouveauFichier = true;
+boolean finFichier = true;
 
-char *StationSenegal = "StationSenegal";
-char *dateTime = "DateTime";
-char *stationid = "stationid";
-char *IdStation = "Sen002";
-String vDateTime = setDateTime_js("10:51:23:27/03/2015");
-char *modeLecture = "regularreading";
-char *sensorUnIdCapteur = "su0001";  // sensorUnitId catpteur tempMoteur
 
-void setup(void)
+void setup (void)
 {
   Serial.begin(9600);
-  initialisation();
+  Timer1.initialize(1000000);
+  capteurs.begin();
+  Timer1.attachInterrupt(timer1_isr);
+  attachInterrupt(0, vitesse, FALLING);
+  attachInterrupt(1, intAlarme, FALLING);
+  date.setDate(2015,4,2);
+  date.setHeure(16,24,33);
+  delay(5000);
 }
 
 void loop(void)
 {
-  temperatureAmbiante = capteurs.getTempAmbi();
-  temperatureMoteur1 = capteurs.getTempMoteur1();
-  temperatureMoteur2 = capteurs.getTempMoteur2();
-  mesureCourant = capteurs.getCurrent();
-  mesureTension = capteurs.getVoltage();
-  
-  StaticJsonBuffer<300> jsonBuffer;
-  JsonObject& root = jsonBuffer.createObject();
-  root[StationSenegal] ;
-  root[dateTime] = vDateTime;
-  root[modeLecture];
-  root["sensorunitid"] = sensorUnIdCapteur;
-  root["event"];
-
-  JsonArray& data = root.createNestedArray("data");
-  data.add("temp moteur1 en degresC");
-  data.add(IdCapteurMot1);// = IdCapteurMot1
-  data.add("value");  // titre
-  data.add(temperatureMoteur1, 1);  // valeur en float
-
-  data.add("temp Moteur 2 en degresC:");
-  data.add(IdCapteurMot2);
-  data.add("value");
-  data.add(temperatureMoteur2, 1);
-
-  data.add("AlarmeVibration :");
-  data.add(IdFrequence);
-  data.add("value");
-  data.add(alarmeVibration, 1);
-
-  data.add("Mesure en tension :");
-  data.add(IdMesureU_24v);
-  data.add("value");
-  data.add(mesureTension, 1);
-
-  data.add("Mesure intensite en amperes :");
-  data.add(IdMesureI_amp);
-  data.add("value");
-  data.add(mesureCourant, 1);
-
-  data.add("Temperature ambiante en degresC:");
-  data.add(IdTempAmbi);
-  data.add("value");
-  data.add(temperatureAmbiante, 1);
-  
-  //setVitesseRPM_js
-  data.add("Vitesse RPM:");
-  data.add(IdVitesseRPM);
-  data.add("value");
-  data.add(vitesseHz*60);
-  
-  root.prettyPrintTo(Serial);
-  pinMode(10, OUTPUT);
- 
-  sprintf(date,"%s.txt",temp.getDate());
-  myFile = SD.open(date, FILE_WRITE);
-  
-  if(myfile)
-  {
-    
-  }
-  
-  if(count >= 4)
+  if(count >= 5)
   {
     count = 0;
-    alarmeVibration = true;
+    if(isMotorOn)
+    {
+        sDate = date.getDateComplete();
+        Serial.print("date: ");
+        Serial.println(sDate);
+        Serial.print("courant: ");
+        Serial.println(ampBatterie);
+        tensionBatterie = capteurs.getVoltage();
+        Serial.print("tension: ");
+        Serial.println(tensionBatterie);
+        tempAmbiante = capteurs.getTempAmbi();
+        Serial.print("temperature Ambiante: ");
+        Serial.println(tempAmbiante);
+        tempMoteur1 = capteurs.getTempMoteur1();
+        Serial.print("temperature Moteur1: ");
+        Serial.println(tempMoteur1);
+        tempMoteur2 = capteurs.getTempMoteur2();
+        Serial.print("temperature Moteur2: ");
+        Serial.println(tempMoteur2);
+        Serial.print("vitesse du moteur");
+        Serial.println(vitesseMoteur);
+        Serial.print("etat Alarme moteur:");
+        
+        if(alarmeVib)
+        {
+          Serial.println("true");
+          alarmeVib = false;
+        }
+        else
+          Serial.println("false");
+          
+        ecritureSD();
+    }
   }
-  
 }
 
-void initialisation(void)
+void ecritureSD(void)
 {
-  Serial.print("Initialisation des capteurs....");
-  Timer1.initialize(PERIODE_TIMER1); // set a timer of length 100000 microseconds (or 0.1 sec - or 10Hz => the led will blink 5 times, 5 cycles of on-and-off, per second)
-  Timer1.attachInterrupt( timerIsr ); // attach the service routine here
-   
-   pinMode(10, OUTPUT);
+  pinMode(10, OUTPUT);
+  
   if (!SD.begin(4)) {
     Serial.println("initialization failed!");
-    return;
+  }
   Serial.println("initialization done.");
   
-  pinMode(2,INPUT);
-  attachInterrupt(2,interruptVitesse,FALLING);
-  
-  pinMode(3,INPUT);
-  attachInterrupt(3,interruptVibAlarm,FALLING);
-  
-  if(capteurs.begin())
+  myfile = SD.open(test, FILE_WRITE);
+
+  // ouvre le fichier Json
+  if(nouveauFichier)
   {
-    Serial.println("erreur dinitialisation des capteurs");
-    return;
+    //nouveauFichier = false;
+    myfile.print(debut);
+    myfile.print(sDate);
+    myfile.print(apDebut);
   }
-    
-  temp.setHeure(3,24,27);
-  temp.setDate(2015,3,27);
-  delay(1000);
-  Serial.println("Initialisation termine");
-  delay(300);
-  Serial.println("commencement de prise de donnees des capteurs");
+  myfile.print(dateLive);
+  myfile.print(sDate);
+  myfile.print(charBattery1);
+  myfile.print(tensionBatterie);
+  myfile.print(charBattery2);
+  myfile.print(ampBatterie);
+  myfile.print(charTemp1);
+  myfile.print(tempAmbiante);
+  myfile.print(charTemp2);
+  myfile.print(tempMoteur1);
+  myfile.print(charTemp3);
+  myfile.print(tempMoteur2);
+  myfile.print(charAcc1);
+  myfile.print(vitesseMoteur);
+  myfile.print(charAcc2);
+  myfile.print(alarmeVib);
+  myfile.print(avFin);
   
+  // ferme le fichier Json
+  if(finFichier)
+  {
+    //finFichier = false
+    myfile.print(fin);
+  }
+  
+  myfile.println("\n\r");
+  //freeMem("RAM restante: ");
+  myfile.close();
+  
+  Serial.println("done.");
+
+  pinMode(10, INPUT);
 }
 
-void timerIsr()
+boolean isMotorOn(void)
 {
-  temp.incremanteTemp();
-  vitesseHz = vitesse;
-  vitesse = 0;
-  
-  if(anVib == vib)
-    vib = 0;
+  ampBatterie = capteurs.getCurrent();
+  if(ampBatterie > 10)
+  {
+    return true;
+  }
   else
   {
-    count++;
+    return false;
   }
-  anVib = vib;
 }
 
-void interruptVitesse()
+boolean heureEnvoieDonne(void)
 {
-  vitesse++;
+  // envoie des donnes a 1h am
+  if(date.temp.heure = 1 && date.temp.seconde >= 59)
+  {
+    return false;
+  }
+  else
+  {
+    return true;
+  }
 }
 
-void interruptVibAlarm()
+void vitesse(void)
 {
-  vib++;
+  vitesseHz++;
 }
+
+void intAlarme(void)
+{
+  alarmeVib = true;
+}
+
+void timer1_isr(void)
+{
+  vitesseMoteur = vitesseHz*60;
+  vitesseHz = 0;
+  count++;
+  date.incremanteTemp();
+}
+
+struct __freelist {
+  size_t sz;
+  struct __freelist *nx;
+};
+
+extern char * const __brkval;
+extern struct __freelist *__flp;
+
+uint16_t freeMem(uint16_t *biggest)
+{
+  char *brkval;
+  char *cp;
+  unsigned freeSpace;
+  struct __freelist *fp1, *fp2;
+
+  brkval = __brkval;
+  if (brkval == 0) {
+    brkval = __malloc_heap_start;
+  }
+  cp = __malloc_heap_end;
+  if (cp == 0) {
+    cp = ((char *)AVR_STACK_POINTER_REG) - __malloc_margin;
+  }
+  if (cp <= brkval) return 0;
+
+  freeSpace = cp - brkval;
+
+  for (*biggest = 0, fp1 = __flp, fp2 = 0;
+     fp1;
+     fp2 = fp1, fp1 = fp1->nx) {
+      if (fp1->sz > *biggest) *biggest = fp1->sz;
+    freeSpace += fp1->sz;
+  }
+
+  return freeSpace;
+}
+
+uint16_t biggest;
+
+void freeMem(char* message) {
+  Serial.print(message);
+  Serial.print(":\t");
+  Serial.println(freeMem(&biggest));
+}
+
+void Sim900power()
+// software equivalent of pressing the GSM shield "power" button
+{
+  digitalWrite(6, HIGH);
+  delay(1000);
+  digitalWrite(6, LOW);
+  delay(5000);
+}
+

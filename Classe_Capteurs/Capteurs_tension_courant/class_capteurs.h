@@ -1,7 +1,4 @@
 
-#include <stdio.h>
-#include <avr/io.h>
-#include <stdint.h>
 #include "DallasTemperature.h"
 #ifndef CLASS_CAPTEURS_H
 #define CLASS_CAPTEURS_H
