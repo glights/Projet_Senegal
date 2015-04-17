@@ -1,4 +1,3 @@
-#include<stdlib.h>
 #include <SD.h> 
 #include <SPI.h>
 #include <TimerOne.h>
@@ -9,21 +8,18 @@ File myfile;
 class_capteurs capteurs;
 Classe_date date;
 
-const char debut[] = "{\"stationmessage\":{\"datetime\":\"";
-const char apDebut[] = "{\",\"stationid\":\"sen002\",\"\":\"regularreading\",\"event\":[";
-const char dateLive[] = "{\"sensorunitid\":\"su0001\",\"data\":[{\"datetime\":\"";
-const char charBattery1[] = "\",\"id\":\"001\",\"valuetype\":\"max\",\"value\":";
-const char charBattery2[] = "},{\"id\":\"002\",\"valuetype\":\"max\",\"value\":";
-const char charTemp1[] = "}]},{\"sensorunitid\":\"su0002\",\"data\":[{\"id\":\"001\",\"valuetype\":\"max\",\"value\":";
-const char charTemp2[] = "},{\"id\":\"002\",\"valuetype\":\"max\",\"value\":";
-const char charTemp3[] = "},{\"id\":\"003\",\"valuetype\":\"max\",\"value\":";
-const char charAcc1[] = "}]},{\"sensorunitid\":\"su0003\",\"data\":[{\"id\":\"001\",\"valuetype\":\"max\",\"value\":";
-const char charAcc2[] = "},{\"id\":\"002\",\"valuetype\":\"max\",\"value\":";
-const char avFin[] = "}]}";
-const char fin[] = "]}}";
+const PROGMEM char debut[] = "{\"stationmessage\":{\"datetime\":\"";
+const PROGMEM char charProg1[] = "\",\"stationid\":\"sta001\",\"eventtype\":\"regularreading\",\"event\":[";
+const PROGMEM char charProg2[] = "{\"sensorunit\":\"su0001\",\"data\":[{\"id\":\"01\",\"datetime\":\"";
+const PROGMEM char charProgValueType[] = "\",\"valuetype\":\"asis\",\"value\":\"";
+const PROGMEM char charProgId2[] = "\"},{\"id\":\"02\",\"datetime\":\"";
+const PROGMEM char charProg6[] = "\"}]},{\"sensorunit\":\"su0002\",\"data\":[{\"id\":\"01\",\"datetime\":\"";
+const PROGMEM char charProg7[] = "\"},{\"id\":\"03\",\"datetime\":\"";
+const PROGMEM char charProg9[] = "\"}]},{\"sensorunit\":\"su0003\",\"data\":[{\"id\":\"01\",\"datetime\":\"";
+const PROGMEM char charProgFinCap[] = "}]}";
+const PROGMEM char fin[] = "]}}";
 
-char *txt = ".txt";
-String sDate = "19:10:25:15:04:2015";
+char *sDate = "    ";
 float tensionBatterie = 55.45;
 float ampBatterie = 60.3;
 float tempAmbiante = 36.65;
@@ -37,32 +33,37 @@ int vitesseHz = 0;
 int count = 0;
 
 boolean nouveauFichier = true;
-boolean finFichier = true;
-
+boolean finFichier = false;
 
 void setup (void)
 {
   Serial.begin(9600);
   Timer1.initialize(1000000);
+  Serial.println("\n\rstarting...");
   capteurs.begin();
   Timer1.attachInterrupt(timer1_isr);
   attachInterrupt(0, vitesse, FALLING);
   attachInterrupt(1, intAlarme, FALLING);
-  date.setDate(2015,4,2);
-  date.setHeure(16,24,33);
+  //date.setDate(2015,4,2);
+  //date.setHeure(16,24,33);
   delay(5000);
 }
 
 void loop(void)
 {
+  int k;
+  char myChar;
+  
   if(count >= 5)
   {
     count = 0;
-    //if(isMotorOn)
-    //{
-        sDate = date.getDateComplete();
+    if(isMotorOn)
+    {
+        //sDate = date.getDateComplete();
+        Serial.println();
         Serial.print("date: ");
         Serial.println(sDate);
+        ampBatterie = capteurs.getCurrent();
         Serial.print("courant: ");
         Serial.println(ampBatterie);
         tensionBatterie = capteurs.getVoltage();
@@ -80,7 +81,6 @@ void loop(void)
         Serial.print("vitesse du moteur");
         Serial.println(vitesseMoteur);
         Serial.print("etat Alarme moteur:");
-        
         if(alarmeVib)
         {
           Serial.println("true");
@@ -90,12 +90,15 @@ void loop(void)
           Serial.println("false");
           
         ecritureSD();
-    //}
+    }
   }
 }
 
 void ecritureSD(void)
 {
+  char myChar;
+  int k;
+  
   pinMode(10, OUTPUT);
   
   if (!SD.begin(4)) {
@@ -108,34 +111,157 @@ void ecritureSD(void)
   // ouvre le fichier Json
   if(nouveauFichier)
   {
-    //nouveauFichier = false;
-    myfile.print(debut);
+    nouveauFichier = false;
+
+   for (k = 0; k < strlen(debut); k++)
+    {
+      myChar =  pgm_read_byte_near(debut + k);
+      myfile.print(myChar);
+    }
     myfile.print(sDate);
-    myfile.print(apDebut);
+    
+    for (k = 0; k < strlen(charProg1); k++)
+    {
+      myChar =  pgm_read_byte_near(charProg1 + k);
+      myfile.print(myChar);
+    }
   }
-  myfile.print(dateLive);
-  myfile.print(sDate);
-  myfile.print(charBattery1);
-  myfile.print(tensionBatterie);
-  myfile.print(charBattery2);
-  myfile.print(ampBatterie);
-  myfile.print(charTemp1);
-  myfile.print(tempAmbiante);
-  myfile.print(charTemp2);
-  myfile.print(tempMoteur1);
-  myfile.print(charTemp3);
-  myfile.print(tempMoteur2);
-  myfile.print(charAcc1);
-  myfile.print(vitesseMoteur);
-  myfile.print(charAcc2);
-  myfile.print(alarmeVib);
-  myfile.print(avFin);
   
+  for (k = 0; k < strlen(charProg2); k++)
+    {
+      myChar =  pgm_read_byte_near(charProg2 + k);
+      myfile.print(myChar);
+    }
+    
+    myfile.print(sDate);
+    
+    for (k = 0; k < strlen(charProgValueType); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgValueType + k);
+      myfile.print(myChar);
+    }
+    
+    myfile.print(ampBatterie);
+    
+    for (k = 0; k < strlen(charProgId2); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgId2 + k);
+      myfile.print(myChar);
+    }
+    
+    myfile.print(sDate);
+    
+    for (k = 0; k < strlen(charProgValueType); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgValueType + k);
+      myfile.print(myChar);
+    }
+    
+    myfile.print(tensionBatterie);
+    
+    for (k = 0; k < strlen(charProgFinCap); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgFinCap + k);
+      myfile.print(myChar);
+    }
+    
+    for (k = 0; k < strlen(charProg6); k++)
+    {
+      myChar =  pgm_read_byte_near(charProg6 + k);
+      myfile.print(myChar);
+    }
+    
+    myfile.print(sDate);
+    for (k = 0; k < strlen(charProgValueType); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgValueType + k);
+      myfile.print(myChar);
+    }
+    myfile.print(tempAmbiante);
+     for (k = 0; k < strlen(charProgId2); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgId2 + k);
+      myfile.print(myChar);
+    }
+    myfile.print(sDate);
+     for (k = 0; k < strlen(charProgValueType); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgValueType + k);
+      myfile.print(myChar);
+    }
+    myfile.print(tempMoteur1);
+     for (k = 0; k < strlen(charProg7); k++)
+    {
+      myChar =  pgm_read_byte_near(charProg7 + k);
+      myfile.print(myChar);
+    }
+    myfile.print(sDate);
+     for (k = 0; k < strlen(charProgValueType); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgValueType + k);
+      myfile.print(myChar);
+    }
+    myfile.print(tempMoteur2);
+    
+    
+     for (k = 0; k < strlen(charProgFinCap); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgFinCap + k);
+      myfile.print(myChar);
+    }
+    
+     for (k = 0; k < strlen(charProg9); k++)
+    {
+      myChar =  pgm_read_byte_near(charProg9 + k);
+      myfile.print(myChar);
+    }
+    myfile.print(sDate);
+     for (k = 0; k < strlen(charProgValueType); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgValueType + k);
+      myfile.print(myChar);
+    }
+    myfile.print(vitesseMoteur);
+     for (k = 0; k < strlen(charProgId2); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgId2 + k);
+      myfile.print(myChar);
+    }
+    myfile.print(sDate);
+     for (k = 0; k < strlen(charProgValueType); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgValueType + k);
+      myfile.print(myChar);
+    }
+    if(alarmeVib)
+    {
+      myfile.println("true");
+      alarmeVib = false;
+    }
+    else
+      myfile.println("false");
+      
+      
+       for (k = 0; k < strlen(charProgFinCap); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgFinCap + k);
+      myfile.print(myChar);
+    }
+    
+     for (k = 0; k < strlen(charProgFinCap); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgFinCap + k);
+      myfile.print(myChar);
+    }
   // ferme le fichier Json
   if(finFichier)
   {
-    //finFichier = false
-    myfile.print(fin);
+    finFichier = true;
+     for (k = 0; k < strlen(fin); k++)
+    {
+      myChar =  pgm_read_byte_near(fin + k);
+      myfile.print(myChar);
+    }
   }
   
   myfile.println("\n\r");
@@ -146,11 +272,10 @@ void ecritureSD(void)
 
   pinMode(10, INPUT);
 }
-
 boolean isMotorOn(void)
 {
   ampBatterie = capteurs.getCurrent();
-  if(ampBatterie > 10)
+  if(ampBatterie >= 0)
   {
     return true;
   }
