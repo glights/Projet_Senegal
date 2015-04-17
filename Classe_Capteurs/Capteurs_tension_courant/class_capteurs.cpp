@@ -9,7 +9,7 @@
 
 #include "class_capteurs.h"
 
-OneWire oneWire(10);
+OneWire oneWire(9);
 
 DallasTemperature tempSensors(&oneWire);
 
