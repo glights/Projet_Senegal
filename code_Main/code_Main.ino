@@ -68,12 +68,17 @@ void setup (void)
   attachInterrupt(1, intAlarme, FALLING);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   date.setDate(2015,4,2);
   date.setHeure(23,59,22);
   if (!SD.begin(4)) {
     //Serial.println("initialization SD failed!");
   }
   //Serial.println("initialization SD done.");
+=======
+  //date.setDate(2015,4,2);
+  //date.setHeure(16,24,33);
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
   //date.setDate(2015,4,2);
   //date.setHeure(16,24,33);
@@ -93,6 +98,7 @@ void loop(void)
     count = 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     if(isMotorOn())
     {
         sDate = date.getDateComplete();
@@ -100,6 +106,8 @@ void loop(void)
         //Serial.print("date: ");
         //Serial.println(sDate);
 =======
+=======
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
     if(isMotorOn)
@@ -145,9 +153,14 @@ void loop(void)
           Serial.println("false");
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         */
         ecritureSD();
         alarmeVib = false;
+=======
+          
+        ecritureSD();
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
           
         ecritureSD();
@@ -178,11 +191,14 @@ void ecritureSD(void)
   
   pinMode(10, OUTPUT);
   
+  pinMode(10, OUTPUT);
+  
   if (!SD.begin(4)) {
     Serial.println("initialization failed!");
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
   }
   
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
   // si fichier existe pas creer un nouveau fichier
@@ -196,6 +212,8 @@ void ecritureSD(void)
 =======
 =======
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
+=======
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
   myfile = SD.open(date.getDateFichier(), FILE_WRITE);
 
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
@@ -205,7 +223,12 @@ void ecritureSD(void)
     nouveauFichier = false;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     for (k = 0; k < strlen(debut); k++)
+=======
+
+   for (k = 0; k < strlen(debut); k++)
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
 
    for (k = 0; k < strlen(debut); k++)
@@ -227,7 +250,11 @@ void ecritureSD(void)
     }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
  }
+=======
+  }
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
   }
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
@@ -275,8 +302,12 @@ void ecritureSD(void)
     
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     ////////////////////////////////////////////////////////////////
     /*for (k = 0; k < strlen(charProgId); k++)
+=======
+    for (k = 0; k < strlen(charProg6); k++)
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
     for (k = 0; k < strlen(charProg6); k++)
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
@@ -297,6 +328,7 @@ void ecritureSD(void)
     myfile.print(tempAmbiante);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     
     for (k = 0; k < strlen(charProgEndValue); k++)
     {
@@ -306,6 +338,9 @@ void ecritureSD(void)
     
     //////////////////////////////////////////////////////////////
     for (k = 0; k < strlen(charProgId); k++)
+=======
+     for (k = 0; k < strlen(charProgId2); k++)
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
      for (k = 0; k < strlen(charProgId2); k++)
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
@@ -338,6 +373,7 @@ void ecritureSD(void)
     
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     for (k = 0; k < strlen(charProgEndValue); k++)
     {
       myChar =  pgm_read_byte_near(charProgEndValue + k);
@@ -345,6 +381,10 @@ void ecritureSD(void)
     }
     /////////////////////////////////////////////////////////////
     /*for (k = 0; k < strlen(charProgId); k++)
+=======
+    
+     for (k = 0; k < strlen(charProgFinCap); k++)
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
     
      for (k = 0; k < strlen(charProgFinCap); k++)
@@ -376,10 +416,16 @@ void ecritureSD(void)
       myfile.print(myChar);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     }*/
     
     ///////////////////////////////////////////////////////////////
     for (k = 0; k < strlen(charProgId); k++)
+=======
+    }
+    myfile.print(sDate);
+     for (k = 0; k < strlen(charProgValueType); k++)
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
     }
     myfile.print(sDate);
@@ -419,9 +465,14 @@ void ecritureSD(void)
   {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     finFichier = false;
     //finFichier = true;
     for (k = 0; k < strlen(fin); k++)
+=======
+    finFichier = true;
+     for (k = 0; k < strlen(fin); k++)
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
     finFichier = true;
      for (k = 0; k < strlen(fin); k++)
@@ -436,9 +487,12 @@ void ecritureSD(void)
     }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     myfile.close();
   // EnvoieDonne();
 =======
+=======
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
   }
@@ -476,9 +530,16 @@ boolean isMotorOn(void)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   if(tensionBatterie >= 0)
   {
     return true;
+=======
+  // envoie des donnes a 1h am
+  if(date.temp.heure = 1 && date.temp.seconde >= 59)
+  {
+    return false;
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
   // envoie des donnes a 1h am
   if(date.temp.heure = 1 && date.temp.seconde >= 59)
@@ -500,6 +561,7 @@ boolean isMotorOn(void)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 void EnvoieDonne(void)
 {
   /*myfile = SD.open("ALLO.txt");
@@ -517,6 +579,8 @@ void EnvoieDonne(void)
   sim908.power_offSim();*/
 }
 
+=======
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======

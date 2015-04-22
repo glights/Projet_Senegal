@@ -66,6 +66,7 @@ char *Classe_date::getDate(void)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     char strDate[30] = "2015:3:26";
 	int anne = date.y+dOffset;
 	int mois = date.m;
@@ -75,11 +76,16 @@ char *Classe_date::getDate(void)
 =======
 =======
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
+=======
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
     char strDate[] = "2015/03/26";
 
     sprintf(strDate,"%04d/%02d/%02d",
             (int)date.y+(int)dOffset, (int)date.m, (int)date.d);
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
+=======
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
@@ -90,7 +96,11 @@ char *Classe_date::getDateFichier(void)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     char strDate[30] = "20150326.txt";
+=======
+    char strDate[] = "20150326";
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
     char strDate[] = "20150326";
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
@@ -107,6 +117,7 @@ char *Classe_date::getHeure(void)
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     char strDate[30] = "01:11:26";
 
 	int heures = temp.heure;
@@ -118,11 +129,16 @@ char *Classe_date::getHeure(void)
 =======
 =======
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
+=======
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
     char strDate[] = "01:11:26";
 
     sprintf(strDate,"%02d:%02d:%02d",(int)temp.heure,
             (int)temp.minute, (int)temp.seconde);
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
+=======
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 =======
 >>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
