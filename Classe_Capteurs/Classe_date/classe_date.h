@@ -14,17 +14,17 @@ public:
     struct sDate
     {
         int y = 2015;
-        int m = 3;
-        int d = 27;
+        unsigned char m = 3;
+        unsigned char d = 27;
     };
 
     int dOffset = 0;
 
     struct sTemp
     {
-        int heure = 23;
-        int minute = 55;
-        int seconde = 58;
+        unsigned char heure = 23;
+        unsigned char minute = 55;
+        unsigned char seconde = 58;
     };
 
     struct sDate date;

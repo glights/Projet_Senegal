@@ -10,13 +10,13 @@ class_capteurs capteurs;
 Classe_date date;
 classe_sim908 sim908;
 
-const PROGMEM char debut[] = "{\"stationmessage\":{\"datetime\":\"";
-const PROGMEM char debut2[] = "\",\"stationid\":\"sen002\",\"eventtype\":\"regularreading\",\"event\":[{\"sensorunit\":\"su0009\",\"data\":[";
-const PROGMEM char charProgId[] = "{\"id\":\"0";
-const PROGMEM char charProgDateTime[] = "\",\"datetime\":\"";
-const PROGMEM char charProgValueType[] = "\",\"valuetype\":\"asis\",\"value\":\"";
-const PROGMEM char charProgEndValue[] = "\"},";
-const PROGMEM char fin[] = "\"}]}]}}";
+const  char debut[] PROGMEM = "{\"stationmessage\":{\"datetime\":\"";
+const char debut2[] PROGMEM= "\",\"stationid\":\"sen002\",\"eventtype\":\"regularreading\",\"event\":[{\"sensorunit\":\"su0009\",\"data\":[";
+const char charProgId[] PROGMEM = "{\"id\":\"0";
+const char charProgDateTime[] PROGMEM = "\",\"datetime\":\"";
+const char charProgValueType[] PROGMEM = "\",\"valuetype\":\"asis\",\"value\":\"";
+const char charProgEndValue[] PROGMEM = "\"},";
+const char fin[] PROGMEM = "\"}]}]}}";
 
 String sDate = "2015-04-17 09:23:27";
 int tensionBatterie = 0;
@@ -98,7 +98,6 @@ void loop(void)
   }
 }
 
-
 void ecritureSD(void)
 {
   char myChar;
@@ -119,8 +118,6 @@ void ecritureSD(void)
       
   if((date.temp.heure == 23)&&(date.temp.minute == 59)&&(date.temp.seconde >= 50))
     finFichier= true;
-    
-  
   
   myfile = SD.open(cDateFichier, FILE_WRITE);
   // ouvre le fichier Json
@@ -348,7 +345,7 @@ void ecritureSD(void)
       myfile.print(myChar);
     }
     myfile.close();
-    EnvoieDonne();
+  // EnvoieDonne();
   }
   else
   {
@@ -377,7 +374,7 @@ boolean isMotorOn(void)
 
 void EnvoieDonne(void)
 {
-  myfile = SD.open(cDateFichier);
+  /*myfile = SD.open("ALLO.txt");
   delay(500);
   sim908.power_onSim();
   sim908.setSim908();
@@ -389,7 +386,7 @@ void EnvoieDonne(void)
     }
   delay(5000);
   sim908.sendJson();
-  sim908.power_offSim();
+  sim908.power_offSim();*/
 }
 
 void vitesse(void)
