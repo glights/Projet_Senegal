@@ -50,45 +50,52 @@ void Classe_date::incremanteTemp(void)
 
 //fonction pour prendre la date
 
+
+
 char *Classe_date::getDateComplete(void)
 {
-    char strDate[30];
-	int anne = date.y+dOffset;
-	int mois = date.m;
-	int jours = date.d;
-	int heures = temp.heure;
-	int minutes = temp.minute;
-	int secondes = temp.seconde;
+    char strDate[] = "2015/03/26 01:16:27";
 
-    sprintf(strDate,"%04d-%02d-%02d %02d:%02d:%02d",anne, mois, jours, heures, minutes, secondes);
+    sprintf(strDate,"%04d/%02d/%02d %02d:%02d:%02d",
+            (int)date.y+(int)dOffset, (int)date.m, (int)date.d),
+            (int)temp.heure, (int)temp.minute, (int)temp.seconde;
     return strDate;
 }
 
 char *Classe_date::getDate(void)
 {
+<<<<<<< HEAD
     char strDate[30] = "2015:3:26";
 	int anne = date.y+dOffset;
 	int mois = date.m;
 	int jours = date.d;
 	
     sprintf(strDate,"%04d-02d-%02d",anne, mois, jours);
+=======
+    char strDate[] = "2015/03/26";
+
+    sprintf(strDate,"%04d/%02d/%02d",
+            (int)date.y+(int)dOffset, (int)date.m, (int)date.d);
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
     return strDate;
 }
 
 char *Classe_date::getDateFichier(void)
 {
+<<<<<<< HEAD
     char strDate[30] = "20150326.txt";
+=======
+    char strDate[] = "20150326";
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
 
-	int anne = date.y+dOffset;
-	int mois = date.m;
-	int jours = date.d;
-	
-    sprintf(strDate,"%04d%02d%02d.txt",anne, mois, jours);
+    sprintf(strDate,"%04d%02d%02d.txt",
+            (int)date.y+(int)dOffset, (int)date.m, (int)date.d);
     return strDate;
 }
 
 char *Classe_date::getHeure(void)
 {
+<<<<<<< HEAD
     char strDate[30] = "01:11:26";
 
 	int heures = temp.heure;
@@ -97,6 +104,12 @@ char *Classe_date::getHeure(void)
 	
     sprintf(strDate,"%02d:%02d:%02d",heures,
             minutes, secondes);
+=======
+    char strDate[] = "01:11:26";
+
+    sprintf(strDate,"%02d:%02d:%02d",(int)temp.heure,
+            (int)temp.minute, (int)temp.seconde);
+>>>>>>> parent of 7ece9a0... changement pour la sd fonctionnel++
     return strDate;
 }
 
