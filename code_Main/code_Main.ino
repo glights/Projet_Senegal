@@ -1,3 +1,4 @@
+#include <classe_sim908.h>
 #include <SD.h> 
 #include <SPI.h>
 #include <TimerOne.h>
@@ -7,9 +8,10 @@
 File myfile;
 class_capteurs capteurs;
 Classe_date date;
+classe_sim908 sim908;
 
 const PROGMEM char debut[] = "{\"stationmessage\":{\"datetime\":\"";
-const PROGMEM char debut2[] = "\",\"stationid\":\"sen002\",\"eventtype\":\"regularreading\",\"event\":[{\"sensorunit\": \"su0009\",\"data\": [";
+const PROGMEM char debut2[] = "\",\"stationid\":\"sen002\",\"eventtype\":\"regularreading\",\"event\":[{\"sensorunit\":\"su0009\",\"data\":[";
 const PROGMEM char charProgId[] = "{\"id\":\"0";
 const PROGMEM char charProgDateTime[] = "\",\"datetime\":\"";
 const PROGMEM char charProgValueType[] = "\",\"valuetype\":\"asis\",\"value\":\"";
@@ -17,19 +19,21 @@ const PROGMEM char charProgEndValue[] = "\"},";
 const PROGMEM char fin[] = "\"}]}]}}";
 
 String sDate = "2015-04-17 09:23:27";
-float tensionBatterie = 55.45;
-float ampBatterie = 60.3;
-float tempAmbiante = 36.65;
-float tempMoteur1 = 100.35;
-float tempMoteur2 = 100.98;
-double vitesseMoteur = 6000;
+int tensionBatterie = 0;
+int ampBatterie = 0;
+//float tempAmbiante = 0;
+int tempMoteur1 = 0;
+int tempMoteur2 = 0;
+//double vitesseMoteur = 0;
 boolean alarmeVib = false;
+
+char cDateFichier[13];
 
 int vitesseHz = 0;
 
 int count = 0;
 
-boolean nouveauFichier = true;
+boolean nouveauFichier = false;
 boolean finFichier = false;
 
 void setup (void)
@@ -37,70 +41,61 @@ void setup (void)
   pinMode(10, OUTPUT);
   Serial.begin(9600);
   Timer1.initialize(1000000);
-  Serial.println("\n\rstarting...");
+  //Serial.println("\n\rstarting...");
   capteurs.begin();
   Timer1.attachInterrupt(timer1_isr);
-  attachInterrupt(0, vitesse, FALLING);
+ // attachInterrupt(0, vitesse, FALLING);
   attachInterrupt(1, intAlarme, FALLING);
   date.setDate(2015,4,2);
-  date.setHeure(16,24,33);
+  date.setHeure(23,59,22);
+  if (!SD.begin(4)) {
+    //Serial.println("initialization SD failed!");
+  }
+  //Serial.println("initialization SD done.");
   delay(5000);
 }
 
 void loop(void)
-{
-  int k;
-  char myChar;
-  
-  if(count >= 5)
+{  
+  if(count >= 10)
   {
+    //Serial.println("ok");
     count = 0;
-    //if(isMotorOn)
-    //{
+    if(isMotorOn())
+    {
         sDate = date.getDateComplete();
-        Serial.println();
-        Serial.print("date: ");
-        Serial.println(sDate);
+        //Serial.println();
+        //Serial.print("date: ");
+        //Serial.println(sDate);
         ampBatterie = capteurs.getCurrent();
-        Serial.print("courant: ");
-        Serial.println(ampBatterie);
+        //Serial.print("courant: ");
+        //Serial.println(ampBatterie);
         tensionBatterie = capteurs.getVoltage();
-        Serial.print("tension: ");
-        Serial.println(tensionBatterie);
-        tempAmbiante = capteurs.getTempAmbi();
-        Serial.print("temperature Ambiante: ");
-        Serial.println(tempAmbiante);
+        //Serial.print("tension: ");
+        //Serial.println(tensionBatterie);
+        //tempAmbiante = capteurs.getTempAmbi();
+        //Serial.print("temperature Ambiante: ");
+        //Serial.println(tempAmbiante);
         tempMoteur1 = capteurs.getTempMoteur1();
-        Serial.print("temperature Moteur1: ");
-        Serial.println(tempMoteur1);
+        //Serial.print("temperature Moteur1: ");
+        //Serial.println(tempMoteur1);
         tempMoteur2 = capteurs.getTempMoteur2();
-        Serial.print("temperature Moteur2: ");
-        Serial.println(tempMoteur2);
-        Serial.print("vitesse du moteur");
-        Serial.println(vitesseMoteur);
-        Serial.print("etat Alarme moteur:");
-        
-        /*if(heureEnvoieDonne())
-            envoieDonne();*/
-            
-        if(alarmeVib)
+        //Serial.print("temperature Moteur2: ");
+        //Serial.println(tempMoteur2);
+        //Serial.print("vitesse du moteur");
+        //Serial.println(vitesseMoteur);
+        //Serial.print("etat Alarme moteur:");
+        /*if(alarmeVib)
         {
           Serial.println("true");
         }
         else
           Serial.println("false");
-        
+        */
         ecritureSD();
-        nouveauFichier = false;
         alarmeVib = false;
-       
-    //}
+    }
   }
- /* if(count >= 5)
-        {
-         ecritureSD();
-          finFichier = false;
-        }*/
 }
 
 
@@ -108,18 +103,30 @@ void ecritureSD(void)
 {
   char myChar;
   int k;
+  int i;
+  char *p_cDateFichier;
   
-  if (!SD.begin(4)) {
-    Serial.println("initialization failed!");
+  p_cDateFichier = date.getDateFichier();
+  
+  for(i=0; i<=13;i++)
+  {
+    cDateFichier[i] = p_cDateFichier[i];
   }
-  Serial.println("initialization done.");
   
-  myfile = SD.open("allo1.txt", FILE_WRITE);
-
+  // si fichier existe pas creer un nouveau fichier
+  if(!SD.exists(cDateFichier))
+      nouveauFichier = true;
+      
+  if((date.temp.heure == 23)&&(date.temp.minute == 59)&&(date.temp.seconde >= 50))
+    finFichier= true;
+    
+  
+  
+  myfile = SD.open(cDateFichier, FILE_WRITE);
   // ouvre le fichier Json
-  //if(nouveauFichier)
-  //{
-    //nouveauFichier = false;
+  if(nouveauFichier)
+  {
+    nouveauFichier = false;
     for (k = 0; k < strlen(debut); k++)
     {
       myChar =  pgm_read_byte_near(debut + k);
@@ -133,8 +140,7 @@ void ecritureSD(void)
       myChar =  pgm_read_byte_near(debut2 + k);
       myfile.print(myChar);
     }
- //}
-  
+ }
   
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     for (k = 0; k < strlen(charProgId); k++)
@@ -193,7 +199,7 @@ void ecritureSD(void)
     }
     
     ////////////////////////////////////////////////////////////////
-    for (k = 0; k < strlen(charProgId); k++)
+    /*for (k = 0; k < strlen(charProgId); k++)
     {
       myChar =  pgm_read_byte_near(charProgId + k);
       myfile.print(myChar);
@@ -218,7 +224,7 @@ void ecritureSD(void)
     {
       myChar =  pgm_read_byte_near(charProgEndValue + k);
       myfile.print(myChar);
-    }
+    }*/
     
     //////////////////////////////////////////////////////////////
     for (k = 0; k < strlen(charProgId); k++)
@@ -276,7 +282,7 @@ void ecritureSD(void)
       myfile.print(myChar);
     }
     /////////////////////////////////////////////////////////////
-    for (k = 0; k < strlen(charProgId); k++)
+    /*for (k = 0; k < strlen(charProgId); k++)
     {
       myChar =  pgm_read_byte_near(charProgId + k);
       myfile.print(myChar);
@@ -301,7 +307,7 @@ void ecritureSD(void)
     {
       myChar =  pgm_read_byte_near(charProgEndValue + k);
       myfile.print(myChar);
-    }
+    }*/
     
     ///////////////////////////////////////////////////////////////
     for (k = 0; k < strlen(charProgId); k++)
@@ -332,31 +338,34 @@ void ecritureSD(void)
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
   // ferme le fichier Json
-  //if(finFichier)
-  //{
+  if(finFichier)
+  {
+    finFichier = false;
     //finFichier = true;
     for (k = 0; k < strlen(fin); k++)
     {
       myChar =  pgm_read_byte_near(fin + k);
       myfile.print(myChar);
     }
-    
-  //}
+    myfile.close();
+    EnvoieDonne();
+  }
+  else
+  {
+  for (k = 0; k < strlen(charProgEndValue); k++)
+    {
+      myChar =  pgm_read_byte_near(charProgEndValue + k);
+      myfile.print(myChar);
+    }
+  }
   
-  
-  
-  myfile.println("\n\r");
-  //freeMem("RAM restante: ");
-  myfile.close();
-  
-  Serial.println("done.");
+ // Serial.println("done.");
 
   //pinMode(10, INPUT);
 }
 boolean isMotorOn(void)
 {
-  
-  if(tensionBatterie >= 5)
+  if(tensionBatterie >= 0)
   {
     return true;
   }
@@ -366,23 +375,21 @@ boolean isMotorOn(void)
   }
 }
 
-boolean heureEnvoieDonne(void)
+void EnvoieDonne(void)
 {
-  // envoie des donnes a 1h am
-  if(date.temp.heure == 23 && date.temp.minute >= 59 && date.temp.seconde >= 59)
-  {
-    return true;
-    finFichier = true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-void envoieDonne(void)
-{
-  Serial.println("envoie des donnees...");
+  myfile = SD.open(cDateFichier);
+  delay(500);
+  sim908.power_onSim();
+  sim908.setSim908();
+  delay(1000);
+  sim908.envoieJson(myfile.size());
+  delay(100);
+  while (myfile.available()) {
+      Serial.write(myfile.read());
+    }
+  delay(5000);
+  sim908.sendJson();
+  sim908.power_offSim();
 }
 
 void vitesse(void)
@@ -397,55 +404,10 @@ void intAlarme(void)
 
 void timer1_isr(void)
 {
-  vitesseMoteur = vitesseHz*60;
-  vitesseHz = 0;
+  //vitesseMoteur = vitesseHz*60;
+  //vitesseHz = 0;
   count++;
   date.incremanteTemp();
-}
-
-struct __freelist {
-  size_t sz;
-  struct __freelist *nx;
-};
-
-extern char * const __brkval;
-extern struct __freelist *__flp;
-
-uint16_t freeMem(uint16_t *biggest)
-{
-  char *brkval;
-  char *cp;
-  unsigned freeSpace;
-  struct __freelist *fp1, *fp2;
-
-  brkval = __brkval;
-  if (brkval == 0) {
-    brkval = __malloc_heap_start;
-  }
-  cp = __malloc_heap_end;
-  if (cp == 0) {
-    cp = ((char *)AVR_STACK_POINTER_REG) - __malloc_margin;
-  }
-  if (cp <= brkval) return 0;
-
-  freeSpace = cp - brkval;
-
-  for (*biggest = 0, fp1 = __flp, fp2 = 0;
-     fp1;
-     fp2 = fp1, fp1 = fp1->nx) {
-      if (fp1->sz > *biggest) *biggest = fp1->sz;
-    freeSpace += fp1->sz;
-  }
-
-  return freeSpace;
-}
-
-uint16_t biggest;
-
-void freeMem(char* message) {
-  Serial.print(message);
-  Serial.print(":\t");
-  Serial.println(freeMem(&biggest));
 }
 
 void Sim900power()

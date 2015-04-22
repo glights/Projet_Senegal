@@ -66,7 +66,7 @@ char *Classe_date::getDateComplete(void)
 
 char *Classe_date::getDate(void)
 {
-    char strDate[15] = "2015:3:26";
+    char strDate[30] = "2015:3:26";
 	int anne = date.y+dOffset;
 	int mois = date.m;
 	int jours = date.d;
@@ -77,7 +77,7 @@ char *Classe_date::getDate(void)
 
 char *Classe_date::getDateFichier(void)
 {
-    char strDate[10] = "20150326";
+    char strDate[30] = "20150326.txt";
 
 	int anne = date.y+dOffset;
 	int mois = date.m;
@@ -89,7 +89,7 @@ char *Classe_date::getDateFichier(void)
 
 char *Classe_date::getHeure(void)
 {
-    char strDate[10] = "01:11:26";
+    char strDate[30] = "01:11:26";
 
 	int heures = temp.heure;
 	int minutes = temp.minute;

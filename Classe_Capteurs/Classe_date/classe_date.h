@@ -13,12 +13,12 @@ class Classe_date
 public:
     struct sDate
     {
-        long y = 2015;
-        long m = 3;
-        long d = 27;
+        int y = 2015;
+        int m = 3;
+        int d = 27;
     };
 
-    long dOffset = 0;
+    int dOffset = 0;
 
     struct sTemp
     {

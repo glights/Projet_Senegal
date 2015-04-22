@@ -3,9 +3,9 @@
 #ifndef CLASS_CAPTEURS_H
 #define CLASS_CAPTEURS_H
 
-#define TEMPAMBI 0
+#define TEMPAMBI 2
 #define TEMPMOT1 1
-#define TEMPMOT2 2
+#define TEMPMOT2 0
 
 #define PRECISION 10
 
