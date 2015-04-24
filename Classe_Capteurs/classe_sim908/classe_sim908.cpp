@@ -155,7 +155,7 @@
 	void classe_sim908::setSim908(void)
 	{
 		sendATcommand("AT+SAPBR=3,1,\"APN\",\"ltemobile.apn\"","OK", 2000);
-		sendATcommand("AT+SAPBR=1,1","OK", 2000);		
+		sendATcommand("AT+SAPBR=1,1","OK", 10000);	
 	}
 	
 	void classe_sim908::envoieJson(long fileSize)
@@ -164,18 +164,14 @@
 		int k;
 		char myChar;
 		
-		Serial.println("AT+HTTPINIT");
-		Serial.println("AT+HTTPPARA=\"CID\"");
-		Serial.println("AT+HTTPPARA=\"URL\",\"cloudiaproject.org/data.php\"");
-		Serial.println("AT+HTTPPARA=\"CONTENT\",\"application/x-www-form-urlencoded\"");
-		Serial.println("AT+HTTPPARA=\"CONTENT\",\"application/x-www-form-urlencoded\"");
-		/*sendATcommand("AT+HTTPINIT","OK",2000);
+		
+		sendATcommand("AT+HTTPINIT","OK",2000);
 		sendATcommand("AT+HTTPPARA=\"CID\",1","OK",2000);
 		sendATcommand("AT+HTTPPARA=\"URL\",\"cloudiaproject.org/data.php\"","OK",2000);
-		sendATcommand("AT+HTTPPARA=\"CONTENT\",\"application/x-www-form-urlencoded\"","OK",2000);*/
+		sendATcommand("AT+HTTPPARA=\"CONTENT\",\"application/x-www-form-urlencoded\"","OK",2000);
 		Serial.print("AT+HTTPDATA=");
 		Serial.print(strFileSize);
-		Serial.println(",10000");
+		sendATcommand(",20000","DOWNLOAD",2000);
 	}
 	
 	void classe_sim908::sendJson(void)
@@ -183,9 +179,10 @@
 		int k;
 		char myChar;
 		
-		Serial.println("AT+HTTPACTION=1");
-		Serial.println("AT+HTTPREAD");
-		Serial.println("AT+HTTPTERM");
+		sendATcommand("AT+HTTPACTION=1","OK",2000);
+		delay(8000);
+		sendATcommand("AT+HTTPREAD","Successfully parsed JSON",2000);
+		sendATcommand("AT+HTTPTERM","OK",2000);
 		
 	}
 	

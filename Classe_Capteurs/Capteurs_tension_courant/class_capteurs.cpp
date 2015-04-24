@@ -9,13 +9,13 @@
 
 #include "class_capteurs.h"
 
-OneWire oneWire(10);
+OneWire oneWire(9);
 
 DallasTemperature tempSensors(&oneWire);
 
 DeviceAddress tempDeviceAddress;
 
-int numberOfDevices = 0;
+unsigned char numberOfDevices = 0;
 
 bool class_capteurs::begin(void)
 {
@@ -33,17 +33,17 @@ bool class_capteurs::begin(void)
         return 0;
 }
 //fonction pour prendre une mesure de courant a la batterie
-float class_capteurs::getCurrent(void)
+unsigned char class_capteurs::getCurrent(void)
 {
     return readADC(4)/10.24;
 }
 
 //fonction pour prendre une mesure de tension a la batterie
-float class_capteurs::getVoltage(void)
+unsigned char class_capteurs::getVoltage(void)
 {
     return readADC(5)/32.3333;
 }
-float class_capteurs::getTempAmbi(void)
+unsigned char class_capteurs::getTempAmbi(void)
 {
     tempSensors.requestTemperatures();
     if(tempSensors.getAddress(tempDeviceAddress,TEMPAMBI))
@@ -59,7 +59,7 @@ float class_capteurs::getTempAmbi(void)
 }
 
 // fonction pour prendre la valeurs de temperature du moteur1
-float class_capteurs::getTempMoteur1(void)
+unsigned char class_capteurs::getTempMoteur1(void)
 {
     tempSensors.requestTemperatures();
     if(tempSensors.getAddress(tempDeviceAddress,TEMPMOT1))
@@ -70,7 +70,7 @@ float class_capteurs::getTempMoteur1(void)
 }
 
 // fonction pour prendre la valeurs de temperature du moteur2
-float class_capteurs::getTempMoteur2(void)
+unsigned char class_capteurs::getTempMoteur2(void)
 {
     tempSensors.requestTemperatures();
     if(tempSensors.getAddress(tempDeviceAddress,TEMPMOT2))
@@ -81,7 +81,7 @@ float class_capteurs::getTempMoteur2(void)
 }
 
 
-uint16_t class_capteurs::readADC(uint8_t ADCchannel)
+int class_capteurs::readADC(uint8_t ADCchannel)
 {
  //select ADC channel with safety mask
  ADMUX = (ADMUX & 0xF0) | (ADCchannel & 0x0F);
