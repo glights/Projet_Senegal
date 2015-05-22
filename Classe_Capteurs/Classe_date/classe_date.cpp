@@ -100,7 +100,7 @@ char *Classe_date::getHeure(void)
     return strDate;
 }
 
-void Classe_date::setDate(long y, long m, long d)
+void Classe_date::setDate(int y, char m, char d)
 {
     date.y = 0;
     dOffset = y;
@@ -109,7 +109,7 @@ void Classe_date::setDate(long y, long m, long d)
     j = gday();
 }
 
-void Classe_date::setHeure(int h, int m, int s)
+void Classe_date::setHeure(char h, char m, char s)
 {
     temp.heure = h;
     temp.minute = m;

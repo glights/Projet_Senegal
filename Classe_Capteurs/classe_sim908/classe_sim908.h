@@ -3,35 +3,27 @@
 class classe_sim908
 {
 	public:
-	/*const PROGMEM char progHttpInit[12] = "AT+HTTPINI";
-	const PROGMEM char progHttpParaCid[22] = "AT+HTTPPARA=\"CID\",";
-	const PROGMEM char progHttpParaUrl[51] = "AT+HTTPPARA=\"URL\",\"cloudiaproject.org/data.php";
-	const PROGMEM char progHttpParaCon[61] = "AT+HTTPPARA=\"CONTENT\",\"application/x-www-form-urlencoded";
-	const PROGMEM char progHttpData1[14] = "AT+HTTPDATA=";
-	const PROGMEM char progHttpData2[7] = ",1000";
-	const PROGMEM char progHttpAction[16] = "AT+HTTPACTION=";
-	const PROGMEM char progHttpRead[12] = "AT+HTTPREA";
-	const PROGMEM char progHttpTerm[12] = "AT+HTTPTER";*/
 	
-	char _gpsString[97];
+	char _gpsDate[14];
+
+	int anne = 0;
+	char mois = 0;
+	char jour = 0;
+	char heure = 0;
+	char minute = 0;
+	char seconde = 0;
 	
-	char *getAltitude(void);
+	/*void getAnneGPS(void);
 	
-	char *getLongitude(void);
+	void getMoisGPS(void);
 	
-	char *getLatitude(void);
+	void getJourGPS(void);
 	
-	int getAnneGPS(void);
+	void getHeureGPS(void);
 	
-	int getMoisGPS(void);
+	void getMinuteGPS(void);
 	
-	int getJourGPS(void);
-	
-	int getHeureGPS(void);
-	
-	int getMinuteGPS(void);
-	
-	int getSecondeGPS(void);
+	void getSecondeGPS(void);*/
 	
 	void power_onSim(void);
 	

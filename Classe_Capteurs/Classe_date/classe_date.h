@@ -13,12 +13,12 @@ class Classe_date
 public:
     struct sDate
     {
-        int y = 2015;
+        unsigned int y = 2015;
         unsigned char m = 3;
         unsigned char d = 27;
     };
 
-    long dOffset = 0;
+    int dOffset = 0;
 
     struct sTemp
     {
@@ -47,9 +47,9 @@ public:
 
     char *getHeure(void);
 
-    void setDate(long y, long m, long d);
+    void setDate(int y, char m, char d);
 
-    void setHeure(int h, int m, int s);
+    void setHeure(char h, char m, char s);
 };
 
 #endif // CLASSE_DATE_H
